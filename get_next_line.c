@@ -1,86 +1,60 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: momogash <marvin@42.fr>                    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/06/30 13:36:52 by momogash          #+#    #+#             */
-/*   Updated: 2019/07/04 09:31:40 by momogash         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "get_next_line.h"
 
-static int	check_for_new_line(char **store, char **line)
+size_t	find_newline(char *store)
 {
-	char	*tmp_store;
-	char	*tmp;
-	char	*new_line;
-	int		i;
+	int		counter;
 
-	i = 0;
-	new_line = *store;
-	while (new_line[i] != '\n')
-		if (!new_line[i++])
-			return (0);
-	tmp_store = &new_line[i];
-	*tmp_store = '\0';
-	*line = ft_strdup(*store);
-	tmp = *store;
-	*store = ft_strdup(tmp_store + 1);
-	free(tmp);
-	return (1);
+	counter = 0;
+	while (store[counter] != '\n')
+		counter++;
+	return (counter);
 }
 
-static int	read_file(int fd, char *heap, char **stack, char **line)
+int readline(char **store, char **line)
 {
-	char		*tmp_stack;
-	int			ret;
-
-	while ((ret = read(fd, heap, BUFF_SIZE)) > 0)
+	char	*temp;
+	int		pos;
+	pos = 0;
+	if (ft_strchr(*store, '\n') != NULL)
 	{
-		heap[ret] = '\0';
-		if (*stack)
-		{
-			tmp_stack = *stack;
-			*stack = ft_strjoin(tmp_stack, heap);
-			free(tmp_stack);
-			tmp_stack = NULL;
-		}
-		else
-			*stack = ft_strdup(heap);
-		if (check_for_new_line(stack, line))
-			break ;
+		pos = find_newline(*store);
+
+		*line = ft_strsub(*store, 0, pos);
+		temp = ft_strdup(ft_strchr(*store, '\n') + 1);
+		free(*store);
+		*store = temp;
+        if ((*store)[0] == '\0')
+			ft_strdel(store);
+        free(*line);
 	}
-	return (RET(ret));
+	else
+	{
+		*line = ft_strdup(*store);
+		ft_strdel(store);
+	}
+	return(1);
 }
 
-int			get_next_line(int const fd, char **line)
+int get_next_line(int fd, char **line)
 {
-	static char	*stack[MAX_FD];
-	char		*heap;
-	int			ret;
-	int			i;
+	char		stackbuff[BUFF_SIZE + 1];
+	static char	*store;
+	long        bytes;
+	char		*temp;
 
-	if (!line || (fd < 0 || fd > MAX_FD) || (read(fd, stack[fd], 0) < 0) \
-			|| !(heap = (char*)malloc(sizeof(char) * BUFF_SIZE + 1)))
-		return (-1);
-	if (stack[fd])
-		if (check_for_new_line(&stack[fd], line))
-			return (1);
-	i = 0;
-	while (i < BUFF_SIZE)
-		heap[i++] = '\0';
-	ret = read_file(fd, heap, &stack[fd], line);
-	free(heap);
-	if (ret != 0 || stack[fd] == NULL || stack[fd][0] == '\0')
+	if (store == NULL)
+		store = ft_strnew(0);
+	while ((bytes = read(fd, stackbuff, BUFF_SIZE)) > 0)
 	{
-		if (!ret && *line)
-			*line = NULL;
-		return (ret);
+		stackbuff[bytes] = '\0';
+		temp = ft_strjoin(store, stackbuff);
+		free(store);
+		store = temp;
 	}
-	*line = stack[fd];
-	stack[fd] = NULL;
-	return (1);
+	if	(bytes < 0 )
+		return(long)(-1);
+	else if	(bytes == 0 && ft_strlen(store) == 0)
+		return(int)(0);
+	else
+		return	(long)(readline(&store, line));
 }
