@@ -6,7 +6,7 @@
 /*   By: momogash <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/09 11:43:18 by momogash          #+#    #+#             */
-/*   Updated: 2019/09/09 13:10:43 by momogash         ###   ########.fr       */
+/*   Updated: 2019/09/09 15:25:41 by momogash         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int		get_next_line(int fd, char **line)
 	{
 		stackbuff[bytes] = '\0';
 		temp = ft_strjoin(store[fd], stackbuff);
-		free(store);
+		free(store[fd]);
 		store[fd] = temp;
 	}
 	if (bytes < 0)
