@@ -6,7 +6,7 @@
 /*   By: momogash <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/09 11:43:18 by momogash          #+#    #+#             */
-/*   Updated: 2019/09/09 15:25:41 by momogash         ###   ########.fr       */
+/*   Updated: 2019/09/11 11:53:44 by momogash         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int		get_next_line(int fd, char **line)
 {
 	char		stackbuff[BUFF_SIZE + 1];
 	static char	*store[MAX_FD];
-	long		bytes;
+	int			bytes;
 	char		*temp;
 
 	if (store[fd] == NULL)
@@ -63,9 +63,9 @@ int		get_next_line(int fd, char **line)
 		store[fd] = temp;
 	}
 	if (bytes < 0)
-		return (long)(-1);
+		return (-1);
 	else if (bytes == 0 && ft_strlen(store[fd]) == 0)
-		return (int)(0);
+		return (0);
 	else
-		return (long)(readline(&store[fd], line));
+		return (readline(&store[fd], line));
 }
