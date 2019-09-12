@@ -1,24 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   ft_strcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: momogash <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/09/09 12:04:59 by momogash          #+#    #+#             */
-/*   Updated: 2019/09/12 18:27:42 by momogash         ###   ########.fr       */
+/*   Created: 2019/05/31 14:49:34 by momogash          #+#    #+#             */
+/*   Updated: 2019/05/31 14:49:40 by momogash         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#include "libft.h"
 
-# define BUFF_SIZE 16
-# define MAX_FD 1024
-
-# include "libft/libft.h"
-# include <fcntl.h>
-
-int	get_next_line(int fd, char **line);
-
-#endif
+int	ft_strcmp(const char *s1, const char *s2)
+{
+	while (*s1 != '\0' && *s1 == *s2)
+	{
+		s1++;
+		s2++;
+	}
+	return ((unsigned char)*s1 - (unsigned char)*s2);
+}
